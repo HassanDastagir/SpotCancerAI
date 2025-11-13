@@ -1,0 +1,15 @@
+{
+  "name": "spotcancerai-app",
+  "version": "1.0.0",
+  "description": "SpotCancerAI - Combined Frontend and Backend Application",
+  "scripts": {
+    "start": "npm run build && npm run server",
+    "build": "flutter build web",
+    "server": "cd backend && npm install && node server.js",
+    "dev": "npm run build && npm run server",
+    "install-deps": "cd backend && npm install"
+  },
+  "keywords": ["flutter", "nodejs", "healthcare", "ai"],
+  "author": "SpotCancerAI Team",
+  "license": "MIT"
+}
