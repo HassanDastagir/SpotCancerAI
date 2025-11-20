@@ -1,0 +1,116 @@
+{% extends 'admin_base.html' %}
+
+{% block admin_content %}
+<div class="row">
+    <!-- User Management Card -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="bi bi-people-fill"></i> User Accounts</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user['username'] }}</td>
+                                <td>{{ user['email'] or 'N/A' }}</td>
+                                <td>
+                                    {% if user['is_admin'] %}
+                                    <span class="badge bg-success">Admin</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">User</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user['username'] != 'admin' %}
+                                    <form method="POST" action="{{ url_for('delete_user', user_id=user['id']) }}"
+                                          onsubmit="return confirm('Delete this user permanently?')">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Messages Card -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <h4><i class="bi bi-envelope-fill"></i> Recent Messages</h4>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                <div class="list-group">
+                    {% for message in messages[:5] %}
+                    <a href="{{ url_for('view_message', message_id=message['id']) }}"
+                       class="list-group-item list-group-item-action {% if not message['is_read'] %}list-group-item-primary{% endif %}">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ message['subject'] }}</h6>
+                            <small>{{ message['created_at'].split('.')[0] }}</small>
+                        </div>
+                        <p class="mb-1">{{ message['message']|truncate(50) }}</p>
+                        <small>From: {{ message['username'] }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-secondary">No messages yet</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Analysis Results -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4><i class="bi bi-file-earmark-medical"></i> Recent Analysis Results</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Date</th>
+                                <th>Result</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records[:10] %}
+                            <tr>
+                                <td>{{ record['username'] }}</td>
+                                <td>{{ record['analysis_date'].split('.')[0] }}</td>
+                                <td>{{ record['result_class'] }}</td>
+                                <td>{{ "%.2f"|format(record['result_confidence'] * 100) }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

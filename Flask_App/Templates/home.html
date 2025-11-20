@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <!-- Welcome Banner -->
+  <div class="text-center mb-4">
+    <h2>Welcome, {{ username }}!</h2>
+    <p class="lead text-muted">Explore your dashboard and start analyzing skin lesion images with SpotCancerAI.</p>
+  </div>
+
+  <!-- Horizontal Cards Row -->
+  <div class="row g-4">  <!-- Added 'g-4' for gap between cards -->
+    <!-- Analyze Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+          <img src="{{ url_for('static', filename='analyze.png') }}" alt="Analyze Icon" style="width: 60px;" class="mb-3">
+          <h5 class="card-title">Analyze</h5>
+          <p class="card-text text-center">Upload images and start skin lesion analysis.</p>
+          <a href="{{ url_for('analyze') }}" class="btn btn-success mt-auto w-100">Start Analyzing</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient Records Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+          <img src="{{ url_for('static', filename='patient_record.png') }}" alt="Records Icon" style="width: 60px;" class="mb-3">
+          <h5 class="card-title">Patient Records</h5>
+          <p class="card-text text-center">View your previous analysis results.</p>
+          <a href="{{ url_for('patient_records') }}" class="btn btn-primary mt-auto w-100">View Records</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+          <img src="{{ url_for('static', filename='profile.png') }}" alt="Profile Icon" style="width: 60px;" class="mb-3">
+          <h5 class="card-title">Profile</h5>
+          <p class="card-text text-center">Manage your account settings and preferences.</p>
+          <a href="{{ url_for('profile') }}" class="btn btn-info mt-auto w-100">View Profile</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Links (Centered Below Cards) -->
+  <div class="mt-5 text-center">
+    <a href="{{ url_for('contact') }}" class="btn btn-outline-primary mx-2">Contact Support</a>
+    <a href="{{ url_for('logout') }}" class="btn btn-danger mx-2">Logout</a>
+  </div>
+</div>
+{% endblock %}

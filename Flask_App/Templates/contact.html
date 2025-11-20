@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2>Contact Support</h2>
+ <form method="POST" action="{{ url_for('contact') }}">
+    <div class="mb-3">
+        <label for="subject" class="form-label">Subject</label>
+        <input type="text" class="form-control" id="subject" name="subject" required>
+    </div>
+    <div class="mb-3">
+        <label for="message" class="form-label">Message</label>
+        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+</form>
+
+  {% if message_sent %}
+  <div class="alert alert-success mt-3">
+    Your message has been sent. We will get back to you soon.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

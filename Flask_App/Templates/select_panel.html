@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <img src="{{ url_for('static', filename='SpotCancerAI.png') }}" alt="Logo" style="width: 150px;" class="mb-4">
+            <h2 class="mb-4">Welcome to SpotCancerAI</h2>
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="mb-4">Select Panel</h4>
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('login') }}?panel=user" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-fill"></i> User Panel
+                        </a>
+                        <a href="{{ url_for('login') }}?panel=admin" class="btn btn-danger btn-lg">
+                            <i class="bi bi-shield-lock-fill"></i> Admin Panel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

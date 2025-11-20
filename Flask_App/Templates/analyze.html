@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <!-- Upload Section -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h2 class="mb-0">Skin Lesion Analysis</h2>
+    </div>
+    <div class="card-body">
+      <form method="POST" enctype="multipart/form-data" id="analysisForm">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <label for="image" class="form-label">Upload Skin Image</label>
+              <input class="form-control" type="file" id="image" name="image" accept="image/*" required>
+              <div class="form-text">
+                Supported formats: JPG, PNG (Max 5MB)
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-search"></i> Analyze Image
+            </button>
+          </div>
+          <div class="col-md-6">
+            <div class="alert alert-info">
+              <h5><i class="fas fa-lightbulb"></i> Tips for Best Results:</h5>
+              <ul class="mb-0">
+                <li>Take photo in good, even lighting</li>
+                <li>Position camera 6-12 inches from skin</li>
+                <li>Keep lesion centered and in focus</li>
+                <li>Include some normal skin around the lesion</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Image Preview -->
+      <div class="mt-3 text-center">
+        <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail d-none" style="max-height: 300px;">
+      </div>
+    </div>
+  </div>
+
+  {% if result %}
+  <!-- Results Section -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">Analysis Results</h4>
+         <span class="badge bg-{{
+      'danger' if result.class_id in ['akiec', 'bcc', 'mel'] else
+      'secondary' if result.class_id == 'unknown' else
+      'warning'
+    }}">
+      {{ result.class }}
+    </span>
+
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <!-- Image Column -->
+        <div class="col-md-5">
+          <div class="text-center mb-3">
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}"
+                 class="img-fluid rounded shadow"
+                 alt="Analyzed lesion"
+                 style="max-height: 300px;">
+          </div>
+
+          <!-- Confidence Meter -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+              <span>Confidence Level:</span>
+              <span>{{ "%.1f"|format(result.confidence * 100) }}%</span>
+            </div>
+            <div class="progress" style="height: 20px;">
+              <div class="progress-bar progress-bar-striped
+                  bg-{{ 'danger' if result.class_id in ['akiec', 'bcc', 'mel'] else 'info' }}"
+                  role="progressbar"
+                  style="width: {{ result.confidence * 100 }}%"
+                  aria-valuenow="{{ result.confidence * 100 }}"
+                  aria-valuemin="0"
+                  aria-valuemax="100">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Column -->
+        <div class="col-md-7">
+          <!-- Urgent Notice for Serious Conditions -->
+          {% if result.class_id in ['akiec', 'bcc', 'mel'] %}
+          <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-triangle"></i> Important Notice</h5>
+            <p class="mb-0">
+              This analysis suggests a potentially serious condition. Please consult a dermatologist
+              {% if result.confidence > 0.7 %}immediately{% else %}as soon as possible{% endif %}.
+            </p>
+          </div>
+          {% endif %}
+
+          <!-- Detailed Description -->
+          <div class="mb-4">
+            <h5>Detailed Description</h5>
+            <p>{{ result.description }}</p>
+          </div>
+
+          <!-- Recommended Actions -->
+          <div class="mb-4">
+            <h5>Recommended Actions</h5>
+            <div class="list-group">
+              {% if result.class_id in ['akiec', 'bcc', 'mel'] %}
+                <div class="list-group-item list-group-item-danger">
+                  <i class="fas fa-arrow-right me-2"></i>
+                  <strong>Schedule a dermatologist appointment immediately</strong>
+                </div>
+                <div class="list-group-item">
+                  <i class="fas fa-camera me-2"></i>
+                  Photograph the lesion weekly to monitor changes
+                </div>
+                <div class="list-group-item">
+                  <i class="fas fa-sun me-2"></i>
+                  Avoid sun exposure and use SPF 50+ sunscreen
+                </div>
+              {% else %}
+                <div class="list-group-item list-group-item-warning">
+                  <i class="fas fa-calendar-check me-2"></i>
+                  Schedule a routine skin check with your doctor
+                </div>
+                <div class="list-group-item">
+                  <i class="fas fa-search me-2"></i>
+                  Monitor for changes in size, shape, or color
+                </div>
+              {% endif %}
+              <div class="list-group-item">
+                <i class="fas fa-user-check me-2"></i>
+                Perform monthly self-examinations of your skin
+              </div>
+            </div>
+          </div>
+
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% if result.class_id == 'unknown' %}
+  <div class="alert alert-secondary">
+    <h5><i class="fas fa-exclamation-circle"></i> Unrecognized Image</h5>
+    <p>The uploaded image does not appear to be a valid skin lesion. Please try again with a clearer photo of a skin lesion.</p>
+  </div>
+{% endif %}
+
+  <!-- Upload Guidelines -->
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Image Requirements</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h6><i class="fas fa-check text-success me-2"></i>Do:</h6>
+          <ul>
+            <li>Use clear, well-lit photos</li>
+            <li>Focus on a single lesion</li>
+            <li>Include some normal skin around it</li>
+            <li>Take photos from multiple angles if needed</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6><i class="fas fa-times text-danger me-2"></i>Don't:</h6>
+          <ul>
+            <li>Upload blurry or distant photos</li>
+            <li>Include drawings or diagrams</li>
+            <li>Upload images of non-skin objects</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript for Image Preview -->
+<script>
+document.getElementById('image').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  const preview = document.getElementById('imagePreview');
+  const maxSize = 5 * 1024 * 1024; // 5MB
+
+  if (file) {
+    // Check file size
+    if (file.size > maxSize) {
+      alert('File is too large (max 5MB allowed)');
+      e.target.value = '';
+      return;
+    }
+
+    // Show preview
+    preview.src = URL.createObjectURL(file);
+    preview.classList.remove('d-none');
+
+    // Check minimum dimensions
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = function() {
+      if (this.width < 224 || this.height < 224) {
+        alert('Image is too small. Minimum 224x224 pixels required.');
+        e.target.value = '';
+        preview.classList.add('d-none');
+      }
+    };
+  } else {
+    preview.classList.add('d-none');
+  }
+});
+</script>
+{% endblock %}

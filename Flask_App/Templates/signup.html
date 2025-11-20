@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center pt-5 pb-5">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <div class="text-center mb-3">
+            <img src="{{ url_for('static', filename='SpotCancerAI.png') }}" alt="Logo" style="width: 100px;">
+        </div>
+        <h4 class="text-center mb-4">Create Your Account</h4>
+
+        <form method="POST">
+            <div class="form-floating mb-3">
+                <input type="text" name="username" class="form-control" id="floatingUsername"
+                       placeholder="Username" required>
+                <label for="floatingUsername">Username</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="email" name="email" class="form-control" id="floatingEmail"
+                       placeholder="Email" required>
+                <label for="floatingEmail">Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" name="password" class="form-control" id="floatingPassword"
+                       placeholder="Password" required>
+                <label for="floatingPassword">Password</label>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-person-plus"></i> Sign Up
+                </button>
+            </div>
+
+            <div class="d-grid">
+                <a href="{{ url_for('google_login') }}" class="btn btn-danger">
+                    <i class="bi bi-google"></i> Sign Up with Google
+                </a>
+            </div>
+        </form>
+
+        <div class="text-center mt-3">
+            <a href="{{ url_for('login') }}">Already have an account? Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

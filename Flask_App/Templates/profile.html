@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2>User Profile</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h4>Account Information</h4>
+                    <table class="table">
+                        <tr>
+                            <th>Username:</th>
+                            <td>{{ user['username'] }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ user['email'] or 'Not provided' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Account Type:</th>
+                            <td>
+                                {% if user['is_admin'] %}
+                                    <span class="badge bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-primary">User</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Authentication:</th>
+                            <td>
+                                {% if user['google_id'] %}
+                                    <span class="badge bg-success">Google</span>
+                                {% else %}
+                                    <span class="badge bg-info">Email/Password</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="{{ url_for('static', filename='profile.png') }}" alt="Profile" style="width: 150px;" class="img-thumbnail mb-3">
+                </div>
+            </div>
+<div class="row">
+    <!-- Update Password Card -->
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5>Update Password</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('update_password') }}">
+                    {% if not user['google_id'] %}
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-key"></i> Update Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Settings Card -->
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5>User Settings</h5>
+            </div>
+            <div class="card-body text-center">
+                <form method="POST" action="{{ url_for('delete_all_records') }}"
+                      onsubmit="return confirm('Are you sure you want to delete ALL your records? This cannot be undone.');">
+                    <button type="submit" class="btn btn-outline-danger mb-3 w-100">
+                        <i class="bi bi-trash"></i> Delete All My Records
+                    </button>
+                </form>
+
+                {% if not user['is_admin'] and not user['google_id'] %}
+                <form method="POST" action="#"
+                      onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="bi bi-person-x"></i> Delete Account
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

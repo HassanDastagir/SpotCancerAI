@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4>Message from {{ message['username'] }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h5>Subject:</h5>
+                <p>{{ message['subject'] }}</p>
+            </div>
+            <div class="mb-3">
+                <h5>Message:</h5>
+                <p>{{ message['message'] }}</p>
+            </div>
+            <div class="mb-3">
+                <h5>Received:</h5>
+                <p>{{ message['created_at'].split('.')[0] }}</p>
+            </div>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

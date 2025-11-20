@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center pt-5 pb-5">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <div class="text-center mb-3">
+            <img src="{{ url_for('static', filename='SpotCancerAI.png') }}" alt="Logo" style="width: 100px;">
+        </div>
+        <h4 class="text-center mb-4">
+            {% if request.args.get('panel') == 'admin' %}
+                Admin Login
+            {% else %}
+                User Login
+            {% endif %}
+        </h4>
+
+        <form method="POST">
+            <div class="form-floating mb-3">
+                <input type="text" name="identifier" class="form-control" id="floatingIdentifier"
+                       placeholder="{% if request.args.get('panel') == 'admin' %}Admin ID{% else %}Username or Email{% endif %}" required>
+                <label for="floatingIdentifier">
+                    {% if request.args.get('panel') == 'admin' %}Admin ID{% else %}Username or Email{% endif %}
+                </label>
+            </div>
+
+            <div class="form-floating mb-3 position-relative">
+                <input type="password" name="password" class="form-control" id="floatingPassword"
+                       placeholder="Password" required>
+                <label for="floatingPassword">Password</label>
+                <span class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor:pointer;" onclick="togglePassword()">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="gray" class="bi bi-eye" viewBox="0 0 16 16">
+                        <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8z"/>
+                        <path d="M8 5.5a2.5 2.5 0 1 1 0 5.001A2.5 2.5 0 0 1 8 5.5z"/>
+                    </svg>
+                </span>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-3">
+            {% if request.args.get('panel') != 'admin' %}
+            <a href="{{ url_for('forgot_password') }}">Forgot Password?</a> |
+            <a href="{{ url_for('signup') }}">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePassword() {
+        const input = document.getElementById('floatingPassword');
+        const icon = document.getElementById('eyeIcon');
+        const type = input.type === 'password' ? 'text' : 'password';
+        input.type = type;
+
+        icon.innerHTML = type === 'text'
+            ? '<path d="M13.359 11.238l2.122 2.122-1.415 1.415-2.122-2.122A7.976 7.976 0 0 1 8 13.5C3 13.5 0 8 0 8a15.863 15.863 0 0 1 3.331-4.418L1.354 1.646 2.768.232l13.536 13.536-1.415 1.415-1.53-1.53z"/>'
+            : '<path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8z"/><path d="M8 5.5a2.5 2.5 0 1 1 0 5.001A2.5 2.5 0 0 1 8 5.5z"/>';
+    }
+</script>
+{% endblock %}

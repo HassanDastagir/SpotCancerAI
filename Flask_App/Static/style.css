@@ -1,0 +1,28 @@
+/* Smooth card entrance animation */
+@keyframes slideFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animated-card {
+  animation: slideFadeIn 0.6s ease-out;
+}
+
+/* Hover glow effect */
+.card:hover {
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);
+  transition: box-shadow 0.3s ease;
+}
+/* static/style.css */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
