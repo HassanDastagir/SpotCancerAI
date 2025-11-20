@@ -4,7 +4,6 @@ from fastapi import Request
 import uvicorn
 import tensorflow as tf
 import numpy as np
-import cv2
 from PIL import Image
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -49,27 +48,22 @@ def get_model():
 
 
 def preprocess_image_bytes(image_bytes: bytes, size=(IMG_W, IMG_H)):
-    # Try PIL first for robust format support
-    try:
-        pil_img = Image.open(io.BytesIO(image_bytes))
-        pil_img = pil_img.convert("RGB")
-        img = np.array(pil_img)
-    except Exception as pil_err:
-        # Fallback: OpenCV decode
-        nparr = np.frombuffer(image_bytes, np.uint8)
-        img_bgr = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        if img_bgr is None:
-            raise ValueError(f"Unable to decode image: {pil_err}")
-        img = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
-    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    kernel = cv2.getStructuringElement(cv2.MORPH_CROSS, (11, 11))
-    blackhat = cv2.morphologyEx(gray, cv2.MORPH_BLACKHAT, kernel)
-    _, hair_mask = cv2.threshold(blackhat, 15, 255, cv2.THRESH_BINARY)
-    cleaned = cv2.inpaint(img, hair_mask, 1, cv2.INPAINT_TELEA)
-    cleaned_resized = cv2.resize(cleaned, (size[0], size[1]), interpolation=cv2.INTER_LANCZOS4)
-    # EfficientNet preprocessing: expect float32 in [0,255] then preprocess_input
-    arr = cleaned_resized.astype(np.float32)
+    # 1️⃣ Read image properly in RGB
+    image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    image = image.resize(size)
+
+    # 2️⃣ Convert to NumPy (float32)
+    arr = np.array(image).astype(np.float32)
+
+    # ⚠️ Make sure your hair-removal step (agar use kar rahe ho)
+    # output 0–255 range me ho aur 3-channel RGB hi rahe
+    # agar tum hair removal karte ho, wo iss step se pehle lagao
+    # aur output np.uint8 me convert kar ke yahan pass karo
+
+    # 3️⃣ EfficientNetB5 preprocessing (V1)
     arr = tf.keras.applications.efficientnet.preprocess_input(arr)
+
+    # 4️⃣ Add batch dimension
     arr = np.expand_dims(arr, axis=0)
     return arr
 

@@ -1,6 +1,6 @@
 class AppConstants {
   // API Configuration - point to backend during dev (Flutter web-server)
-  static const String baseUrl = 'http://localhost:5000/api';
+  static const String baseUrl = 'http://192.168.100.11:5000/api';
   static const String authEndpoint = '$baseUrl/auth';
   static const String imagesEndpoint = '$baseUrl/images';
   static const String scansEndpoint = '$baseUrl/scans';
@@ -25,6 +25,13 @@ class AppConstants {
   static const int errorColorValue = 0xFFB00020;
   static const int warningColorValue = 0xFFFF9800;
   static const int successColorValue = 0xFF4CAF50;
+  
+  // Brand Gradient (red → deep purple)
+  static const int gradientStartColorValue = 0xFFD81B60; // Pink 600
+  static const int gradientEndColorValue = 0xFF4A148C;   // Purple 900
+  
+  // Neutral background used behind cards
+  static const int lightBackgroundColorValue = 0xFFF7F7F7;
   
   // Storage Keys
   static const String tokenKey = 'auth_token';

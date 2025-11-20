@@ -5,6 +5,9 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { mockUsers } = require('./mock-data');
+const multer = require('multer');
+const upload = multer();
+const { predictImage } = require('./services/modelService');
 
 dotenv.config();
 
@@ -309,6 +312,29 @@ app.post('/api/admin/users/:userId/unsuspend', authenticateToken, requireAdmin, 
   } catch (error) {
     console.error('Unsuspend user error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// Predict Route (mock server -> forwards to ML service)
+// Mirrors real backend: POST /api/predict with multipart field 'file'
+app.post('/api/predict', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    const mimeType = req.file.mimetype || 'application/octet-stream';
+    const buffer = req.file.buffer;
+    const filename = req.file.originalname || 'upload.jpg';
+
+    // Forward to ML service (FastAPI) via modelService
+    const result = await predictImage(buffer, filename, mimeType);
+
+    // Ensure consistent response shape
+    return res.json({ success: true, ...result });
+  } catch (error) {
+    console.error('Predict error (mock):', error?.response?.data || error.message);
+    return res.status(500).json({ success: false, message: 'Inference failed', details: error?.message });
   }
 });
 

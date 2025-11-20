@@ -39,7 +39,7 @@ class _ResultScreenState extends State<ResultScreen> {
         _error = null;
       });
 
-      final Uri uri = Uri.parse('http://localhost:5000/api/predict');
+      final Uri uri = Uri.parse('${AppConstants.baseUrl}/predict');
 
       final request = http.MultipartRequest('POST', uri);
 

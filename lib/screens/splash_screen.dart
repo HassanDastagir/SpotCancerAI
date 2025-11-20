@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const PanelSelectionScreen(),
+          builder: (context) =>  RoleSelectionScreen(),
         ),
       );
       print('🚀 SplashScreen: Navigation completed');

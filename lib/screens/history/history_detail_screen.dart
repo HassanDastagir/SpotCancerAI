@@ -248,8 +248,8 @@ class HistoryDetailScreen extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           
-          if (result.recommendations != null && result.recommendations!.isNotEmpty)
-            ...result.recommendations!.asMap().entries.map((entry) {
+          if (result.recommendations.isNotEmpty)
+            ...result.recommendations.asMap().entries.map((entry) {
               final index = entry.key;
               final recommendation = entry.value;
               
@@ -350,11 +350,11 @@ class HistoryDetailScreen extends StatelessWidget {
             label: 'Date & Time',
             value: _formatFullDate(result.scanDate),
           ),
-          _InfoRow(
+          const _InfoRow(
             label: 'Analysis Model',
             value: 'SpotCancerAI v2.1',
           ),
-          _InfoRow(
+          const _InfoRow(
             label: 'Processing Time',
             value: '2.3 seconds',
           ),

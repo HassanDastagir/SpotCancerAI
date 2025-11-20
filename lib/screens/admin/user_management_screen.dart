@@ -372,9 +372,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
               children: [
                 _buildDetailRow('Email', user.email),
                 _buildDetailRow('Status', user.isActive ? 'Active' : 'Inactive'),
-                _buildDetailRow('Role', user.role?.toUpperCase() ?? 'USER'),
-                if (user.createdAt != null)
-                  _buildDetailRow('Joined', DateFormat('MMM dd, yyyy').format(user.createdAt!)),
+                _buildDetailRow('Role', user.role.toUpperCase() ?? 'USER'),
+                _buildDetailRow('Joined', DateFormat('MMM dd, yyyy').format(user.createdAt!)),
                 if (isSuspended && user.suspensionExpiry != null)
                   _buildDetailRow('Suspension Expires', DateFormat('MMM dd, yyyy HH:mm').format(user.suspensionExpiry!)),
                 if (isSuspended && user.suspensionReason != null && user.suspensionReason!.isNotEmpty)
